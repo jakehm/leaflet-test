@@ -1,4 +1,4 @@
-# react-toolbox-example
+# Leaflet test with OSM
 
 ### Getting Started
 1. Clone this repository

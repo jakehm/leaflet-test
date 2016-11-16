@@ -1,38 +1,14 @@
 {
-  "name": "react-toolbox-example",
-  "description": "A set of complementary tools to ReactJS.",
+  "name": "leaflet-osm-test",
+  "description": "Testing easy contributing with leaflet and osm",
   "version": "0.11.4",
   "author": {
-    "name": "React Toolbox Team",
-    "url": "http://github.com/react-toolbox"
+    "name": "Jacob Harrow-Mortelliti"
   },
-  "contributors": [
-    {
-      "name": "Javi Jimenez Villar",
-      "email": "javi.jimenez.villar@gmail.com",
-      "url": "http://soyjavi.com/"
-    },
-    {
-      "name": "Javi Velasco Arjona",
-      "email": "javier.velasco86@gmail.com",
-      "url": "http://javivelasco.com/"
-    }
-  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/react-toolbox/react-toolbox-example.git"
+    "url": "git+https://github.com/jakehm/leaflet-test"
   },
-  "bugs": {
-    "url": "https://github.com/react-toolbox/react-toolbox/issues",
-    "email": "issues@react-toolbox.com"
-  },
-  "keywords": [
-    "components",
-    "material design",
-    "react",
-    "react-component",
-    "toolbox"
-  ],
   "devDependencies": {
     "autoprefixer": "~6.4.0",
     "babel-core": "~6.13.2",
@@ -75,5 +51,8 @@
     "start": "node server"
   },
   "license": "MIT",
-  "homepage": "https://github.com/react-toolbox/react-toolbox-example#readme"
+  "dependencies": {
+    "leaflet": "1.0.0-rc.2",
+    "react-leaflet": "next"
+  }
 }
