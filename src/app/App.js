@@ -2,6 +2,7 @@ import React from 'react'
 import 'react-toolbox/lib/commons.scss'
 import { Map, TileLayer } from 'react-leaflet'
 import { Button, IconButton } from 'react-toolbox/lib/button';
+import Control from 'react-leaflet-control'
 
 class App extends React.Component {
   state = {
@@ -22,15 +23,6 @@ class App extends React.Component {
   }
 
   render () {
-    const fabStyle = {
-      margin: 0,
-      top: 'auto',
-      right: 20,
-      bottom: 20,
-      left: 'auto',
-      position: 'fixed',
-      zIndex: 10
-    };
     const position = [this.state.lat, this.state.lng]
     return (
       <div>
@@ -42,10 +34,10 @@ class App extends React.Component {
           <TileLayer
             url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
           />
+          <Control position="bottomright" >
+            <Button icon='my_location' floating  mini />
+          </Control>
         </Map> 
-        <IconButton icon='my location' 
-          style={fabStyle}
-        />
       </div>
     )
   }
