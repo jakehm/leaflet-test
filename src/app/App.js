@@ -2,8 +2,7 @@ import React from 'react'
 import 'react-toolbox/lib/commons.scss'
 import { Map, TileLayer } from 'react-leaflet'
 import Control from 'react-leaflet-control'
-import { Button, IconButton, Snackbar } from 'react-toolbox';
-import snackbarTheme from './snackbarTheme.scss'
+import { Button, IconButton } from 'react-toolbox';
 
 class App extends React.Component {
   state = {
