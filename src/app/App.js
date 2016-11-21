@@ -3,6 +3,8 @@ import 'react-toolbox/lib/commons.scss'
 import { Map, TileLayer } from 'react-leaflet'
 import Control from 'react-leaflet-control'
 import { Button, IconButton } from 'react-toolbox';
+import axios from 'axios'
+import OverpassLayer from './OverpassLayer'
 
 class App extends React.Component {
   state = {
@@ -37,6 +39,26 @@ class App extends React.Component {
       )
   }
 
+  getPosition = (e) => {
+    const endpoint = `http://nominatim.openstreetmap.org/reverse?\
+      format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}&zoom=18&addressdetails=1`
+    axios.get(endpoint)
+      .then((response) => {
+        const address = response.data.display_name.split(' ').join('+')        
+        const searchEndpoint = `http://nominatim.openstreetmap.org/search?q=${address}&format=json&polygon=1&addressdetails=1`
+        axios.get(searchEndpoint)
+          .then((response) => {
+            console.log(response.data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   render () {
     return (
       <div>
@@ -45,17 +67,18 @@ class App extends React.Component {
           zoom={this.state.zoom}
           center={[this.state.lat, this.state.lng]}
           key={this.state.mapKey}
+          onClick={this.getPosition}
         >
           <TileLayer
             url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            zIndex={0}
           />
           <Control position="bottomright" >
             <Button icon='my_location' floating  mini 
               onClick={this.handleGeolocation}
             />
           </Control>
+          <OverpassLayer />
         </Map>
       </div>
     )

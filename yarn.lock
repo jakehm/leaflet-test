@@ -217,6 +217,12 @@ aws4@^1.2.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.5.0.tgz#0a29ffb79c31c9e712eeb087e8e7a64b4a56d755"
 
+axios:
+  version "0.15.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.15.2.tgz#496f50980b2ce1ad2e195af93c2d03b4d035e90d"
+  dependencies:
+    follow-redirects "0.0.7"
+
 babel-code-frame@^6.11.0, babel-code-frame@^6.16.0, babel-code-frame@^6.8.0:
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/babel-code-frame/-/babel-code-frame-6.16.0.tgz#f90e60da0862909d3ce098733b5d3987c97cb8de"
@@ -1817,6 +1823,13 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
+follow-redirects@0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-0.0.7.tgz#34b90bab2a911aa347571da90f22bd36ecd8a919"
+  dependencies:
+    debug "^2.2.0"
+    stream-consume "^0.1.0"
+
 for-in@^0.1.5:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-0.1.6.tgz#c9f96e89bfad18a545af5ec3ed352a1d9e5b4dc8"
@@ -2364,6 +2377,10 @@ js-base64@^2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.1.9.tgz#f0e80ae039a4bd654b5f281fc93f04a914a7fcce"
 
+js-clipper@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/js-clipper/-/js-clipper-1.0.1.tgz#4d6b07434a4408e7c129e32201ce66d21474ed21"
+
 js-tokens@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-2.0.0.tgz#79903f5563ee778cc1162e6dcf1a0027c97f9cb5"
@@ -2467,9 +2484,16 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
-leaflet@1.0.0-rc.2:
-  version "1.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.0.0-rc.2.tgz#31407b79e37d9b679723d91a26b7ad0a8b9d9063"
+leaflet, leaflet@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.0.1.tgz#5868c389b556cd85481198ff8bfe59a8de0932db"
+
+leaflet-overpass-layer:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/leaflet-overpass-layer/-/leaflet-overpass-layer-2.3.1.tgz#7d7e0b4725bff872a68dba093994778d9d27174b"
+  dependencies:
+    js-clipper "^1.0.1"
+    leaflet "^1.0.1"
 
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
@@ -3958,6 +3982,10 @@ stream-browserify@^1.0.0:
   dependencies:
     inherits "~2.0.1"
     readable-stream "^1.0.27-1"
+
+stream-consume@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/stream-consume/-/stream-consume-0.1.0.tgz#a41ead1a6d6081ceb79f65b061901b6d8f3d1d0f"
 
 strict-uri-encode@^1.0.0:
   version "1.1.0"
