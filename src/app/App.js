@@ -1,20 +1,24 @@
 import React from 'react'
 import 'react-toolbox/lib/commons.scss'
-import { Map, TileLayer } from 'react-leaflet'
+import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 import Control from 'react-leaflet-control'
 import { Button, IconButton } from 'react-toolbox';
 import axios from 'axios'
 import OverpassLayer from './OverpassLayer'
+import MarkerLayer from 'react-leaflet-marker-layer'
+import CustomMarker from './CustomMarker'
 
 class App extends React.Component {
   state = {
-    zoom: 13,
+    zoom: 18,
     lat: 51.505,
     lng: -0.09,
     mapKey: Math.random(),
+    markers: []
   }
 
   componentDidMount () {
+    //center map on user's current position
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
@@ -23,6 +27,28 @@ class App extends React.Component {
         })
       }
     )
+    
+    //make a marker for every POI in the area
+    //each marker needs a position and text 
+    const bounds = this.refs.map.leafletElement.getBounds()
+    const boundsString = [
+      bounds._southWest.lat,
+      bounds._southWest.lng,
+      bounds._northEast.lat,
+      bounds._northEast.lng
+    ].join(',')
+    const overpassURL = 'https://overpass-api.de/api/interpreter?data='
+    const query = '[out:json][timeout:25];' +
+      '(node["amenity"]('+boundsString+');' +
+      'way["amenity"]('+boundsString+');' +
+      'relation["amenity"]('+boundsString+'););' +
+      'out body;>;out skel qt;'
+    const endpoint = overpassURL + query
+    console.log(endpoint)
+    axios.get(endpoint)
+      .then(response => {
+        console.log(response)
+      })
   }
 
   handleGeolocation = () => {
@@ -40,12 +66,12 @@ class App extends React.Component {
   }
 
   getPosition = (e) => {
-    const endpoint = `http://nominatim.openstreetmap.org/reverse?\
+    const endpoint = `https://nominatim.openstreetmap.org/reverse?\
       format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}&zoom=18&addressdetails=1`
     axios.get(endpoint)
       .then((response) => {
         const address = response.data.display_name.split(' ').join('+')        
-        const searchEndpoint = `http://nominatim.openstreetmap.org/search?q=${address}&format=json&polygon=1&addressdetails=1`
+        const searchEndpoint = `https://nominatim.openstreetmap.org/search?q=${address}&format=json&polygon=1&addressdetails=1`
         axios.get(searchEndpoint)
           .then((response) => {
             console.log(response.data)
@@ -68,9 +94,18 @@ class App extends React.Component {
           center={[this.state.lat, this.state.lng]}
           key={this.state.mapKey}
           onClick={this.getPosition}
+          ref='map'
         >
+          {/*
+          <MarkerLayer
+            markers={this.state.markers}
+            longitudeExtractor={m => m.position.lng}
+            latitudeExtractor={m => m.position.lat}
+            markerComponent={CustomMarker}
+            />
+            */}
           <TileLayer
-            url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
           <Control position="bottomright" >
@@ -78,7 +113,6 @@ class App extends React.Component {
               onClick={this.handleGeolocation}
             />
           </Control>
-          <OverpassLayer />
         </Map>
       </div>
     )
