@@ -10,7 +10,7 @@ import CustomMarker from './CustomMarker'
 
 class App extends React.Component {
   state = {
-    zoom: 18,
+    zoom: 16,
     lat: 51.505,
     lng: -0.09,
     mapKey: Math.random(),
@@ -25,9 +25,16 @@ class App extends React.Component {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         })
+        this.getPois()
+      },
+      (err) => {
+        console.log(err)
+        this.getPois()
       }
     )
-    
+  }
+
+  getPois = () => { 
     //make a marker for every POI in the area
     //each marker needs a position and text 
     const bounds = this.refs.map.leafletElement.getBounds()
@@ -44,25 +51,38 @@ class App extends React.Component {
       'relation["amenity"]('+boundsString+'););' +
       'out body;>;out skel qt;'
     const endpoint = overpassURL + query
-    console.log(endpoint)
     axios.get(endpoint)
       .then(response => {
-        console.log(response)
+        const markers = []
+        response.data.elements.forEach(element => {
+          const marker = {
+            position: { lat: element.lat, lng: element.lon },
+            text: element.name
+          }
+          markers.push(marker)
+        })  
+        console.log(markers)
+        this.setState({
+          markers: markers
+        })
       })
   }
 
   handleGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.setState({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            mapKey: Math.random()
-          })
-        }, (err) => {
-          alert("Geolocation did not work: " + err)
-        }
-      )
+      (position) => {
+        this.setState({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          mapKey: Math.random()
+        })
+
+        this.getPois()
+
+      }, (err) => {
+        alert("Geolocation did not work: " + err)
+      }
+    )
   }
 
   getPosition = (e) => {
@@ -96,25 +116,29 @@ class App extends React.Component {
           onClick={this.getPosition}
           ref='map'
         >
-          {/*
           <MarkerLayer
             markers={this.state.markers}
             longitudeExtractor={m => m.position.lng}
             latitudeExtractor={m => m.position.lat}
             markerComponent={CustomMarker}
-            />
-            */}
-          <TileLayer
-            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-          <Control position="bottomright" >
-            <Button icon='my_location' floating  mini 
-              onClick={this.handleGeolocation}
+            <TileLayer
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-          </Control>
-        </Map>
-      </div>
+            <Control position="bottomright" >
+              <Button icon='my_location' floating  mini 
+                onClick={this.handleGeolocation}
+              />
+            </Control>
+            <Control position="topright" >
+              <Button 
+                onClick={this.getPois}>
+                Refresh POIs
+              </Button>
+            </Control>
+          </Map>
+        </div>
     )
   }
 }
