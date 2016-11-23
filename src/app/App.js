@@ -34,6 +34,22 @@ class App extends React.Component {
     )
   }
 
+  getPoiQuery = () => {
+    const bounds = this.refs.map.leafletElement.getBounds()
+    const boundsString = [
+      bounds._southWest.lat,
+      bounds._southWest.lng,
+      bounds._northEast.lat,
+      bounds._northEast.lng
+    ].join(',')
+    const query = '[out:json][timeout:25];' +
+      '(node["amenity"]('+boundsString+');' +
+      'way["amenity"]('+boundsString+');' +
+      'relation["amenity"]('+boundsString+'););' +
+      'out body;>;out skel qt;'
+    return query 
+  }
+
   getPois = () => { 
     //make a marker for every POI in the area
     //each marker needs a position and text 
@@ -94,7 +110,7 @@ class App extends React.Component {
         const searchEndpoint = `https://nominatim.openstreetmap.org/search?q=${address}&format=json&polygon=1&addressdetails=1`
         axios.get(searchEndpoint)
           .then((response) => {
-            console.log(response.data)
+            console.log('Nominatim search:\n'+response.data)
           })
           .catch((err) => {
             console.log(err)
@@ -116,12 +132,14 @@ class App extends React.Component {
           onClick={this.getPosition}
           ref='map'
         >
+          {/*
           <MarkerLayer
             markers={this.state.markers}
             longitudeExtractor={m => m.position.lng}
             latitudeExtractor={m => m.position.lat}
             markerComponent={CustomMarker}
-          />
+            />
+            */}
             <TileLayer
               url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -137,6 +155,9 @@ class App extends React.Component {
                 Refresh POIs
               </Button>
             </Control>
+            <OverpassLayer
+              getQuery={this.getQuery}
+            />
           </Map>
         </div>
     )

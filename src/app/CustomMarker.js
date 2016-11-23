@@ -4,14 +4,14 @@ export default class CustomMarker extends React.Component {
 
   render() {
     const style = {
-      border: 'solid 1px lightblue',
-      backgroundColor: '#333333',
+      border: 'solid 2px blue',
+      backgroundColor: 'yellow',
       borderRadius: '50%',
       marginTop: '-12px',
       marginLeft: '-12px',
       width: '24px',
       height: '24px',
-      opacity: '50%'
+      opacity: '0.2'
     };
 
     return (
