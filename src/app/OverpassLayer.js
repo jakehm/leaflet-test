@@ -1,9 +1,11 @@
 import {LayerGroup} from 'react-leaflet'
 import L from 'leaflet'
-import LeafletOverpassLayer from 'leaflet-overpass-layer'
+import OverPassLayer from 'leaflet-overpass-layer'
 
 export default class OverpassLayer extends LayerGroup {
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps.key)
+    console.log('OverpassLayer receiving props')
     const query = '('
       + 'node["amenity"]({{bbox}});'
       + 'way["amenity"]({{bbox}});'

@@ -5,41 +5,46 @@ import Control from 'react-leaflet-control'
 import { Button, IconButton } from 'react-toolbox';
 import axios from 'axios'
 import OverpassLayer from './OverpassLayer'
-import MarkerLayer from 'react-leaflet-marker-layer'
 import CustomMarker from './CustomMarker'
 
 class App extends React.Component {
   state = {
     zoom: 16,
-    lat: 51.505,
-    lng: -0.09,
+    position: {
+      lat: 51.505,
+      lng: -0.09,
+    },
     mapKey: Math.random(),
-    markers: []
+    markers: [],
+    overpassLayerKey: Math.random()
   }
 
   componentDidMount () {
     //center map on user's current position
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.setState({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        })
-        this.getPois()
-      },
-      (err) => {
-        console.log(err)
-        this.getPois()
-      }
-    )
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.setState({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+          this.refreshOverpassLayer()
+        },
+        (err) => {
+          console.log(err)
+        }
+      )
+    }
   }
 
   handleGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
+          position: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
           mapKey: Math.random()
         })
       }, (err) => {
@@ -68,37 +73,47 @@ class App extends React.Component {
       })
   }
 
+  refreshOverpassLayer = () => {
+    console.log('in refreshOverpassLayer')
+    this.setState({
+      overpassLayerKey: Math.random()
+    })
+  }
+
   render () {
     return (
-      <div>
         <Map 
           style={{height: "100vh", width: "100vw"}}
           zoom={this.state.zoom}
-          center={[this.state.lat, this.state.lng]}
+          center={this.state.position}
           key={this.state.mapKey}
           onClick={this.getPosition}
           ref='map'
         >
           <TileLayer
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            attribution='&copy; <a href="http://osm.org/<copyright">OpenStreetMap</a> contributors'
           />
-          <Control position="bottomright" >
+          {/*<Control position="bottomright" >
             <Button icon='my_location' floating  mini 
               onClick={this.handleGeolocation}
             />
           </Control>
           <Control position="topright" >
             <Button 
-              onClick={this.getPois}>
+              onClick={this.refreshOverpassLayer}>
               Refresh POIs
             </Button>
-          </Control>
+          </Control>*/}
           <OverpassLayer
-            getQuery={this.getQuery}
+            key={this.state.overpassLayerKey}            
           />
+          {/*}
+          <Marker
+            position={this.state.position}
+          />
+          */}
         </Map>
-      </div>
     )
   }
 }
