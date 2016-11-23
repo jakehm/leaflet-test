@@ -34,56 +34,6 @@ class App extends React.Component {
     )
   }
 
-  getPoiQuery = () => {
-    const bounds = this.refs.map.leafletElement.getBounds()
-    const boundsString = [
-      bounds._southWest.lat,
-      bounds._southWest.lng,
-      bounds._northEast.lat,
-      bounds._northEast.lng
-    ].join(',')
-    const query = '[out:json][timeout:25];' +
-      '(node["amenity"]('+boundsString+');' +
-      'way["amenity"]('+boundsString+');' +
-      'relation["amenity"]('+boundsString+'););' +
-      'out body;>;out skel qt;'
-    return query 
-  }
-
-  getPois = () => { 
-    //make a marker for every POI in the area
-    //each marker needs a position and text 
-    const bounds = this.refs.map.leafletElement.getBounds()
-    const boundsString = [
-      bounds._southWest.lat,
-      bounds._southWest.lng,
-      bounds._northEast.lat,
-      bounds._northEast.lng
-    ].join(',')
-    const overpassURL = 'https://overpass-api.de/api/interpreter?data='
-    const query = '[out:json][timeout:25];' +
-      '(node["amenity"]('+boundsString+');' +
-      'way["amenity"]('+boundsString+');' +
-      'relation["amenity"]('+boundsString+'););' +
-      'out body;>;out skel qt;'
-    const endpoint = overpassURL + query
-    axios.get(endpoint)
-      .then(response => {
-        const markers = []
-        response.data.elements.forEach(element => {
-          const marker = {
-            position: { lat: element.lat, lng: element.lon },
-            text: element.name
-          }
-          markers.push(marker)
-        })  
-        console.log(markers)
-        this.setState({
-          markers: markers
-        })
-      })
-  }
-
   handleGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -92,9 +42,6 @@ class App extends React.Component {
           lng: position.coords.longitude,
           mapKey: Math.random()
         })
-
-        this.getPois()
-
       }, (err) => {
         alert("Geolocation did not work: " + err)
       }
@@ -132,34 +79,26 @@ class App extends React.Component {
           onClick={this.getPosition}
           ref='map'
         >
-          {/*
-          <MarkerLayer
-            markers={this.state.markers}
-            longitudeExtractor={m => m.position.lng}
-            latitudeExtractor={m => m.position.lat}
-            markerComponent={CustomMarker}
+          <TileLayer
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <Control position="bottomright" >
+            <Button icon='my_location' floating  mini 
+              onClick={this.handleGeolocation}
             />
-            */}
-            <TileLayer
-              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Control position="bottomright" >
-              <Button icon='my_location' floating  mini 
-                onClick={this.handleGeolocation}
-              />
-            </Control>
-            <Control position="topright" >
-              <Button 
-                onClick={this.getPois}>
-                Refresh POIs
-              </Button>
-            </Control>
-            <OverpassLayer
-              getQuery={this.getQuery}
-            />
-          </Map>
-        </div>
+          </Control>
+          <Control position="topright" >
+            <Button 
+              onClick={this.getPois}>
+              Refresh POIs
+            </Button>
+          </Control>
+          <OverpassLayer
+            getQuery={this.getQuery}
+          />
+        </Map>
+      </div>
     )
   }
 }
