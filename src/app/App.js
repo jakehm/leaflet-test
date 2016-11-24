@@ -5,7 +5,6 @@ import Control from 'react-leaflet-control'
 import { Button, IconButton } from 'react-toolbox';
 import axios from 'axios'
 import OverpassLayer from './OverpassLayer'
-import CustomMarker from './CustomMarker'
 
 class App extends React.Component {
   state = {
@@ -15,44 +14,35 @@ class App extends React.Component {
       lng: -0.09,
     },
     mapKey: Math.random(),
-    markers: [],
     overpassLayerKey: Math.random()
   }
 
   componentDidMount () {
     //center map on user's current position
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.setState({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          })
-          this.refreshOverpassLayer()
-        },
-        (err) => {
-          console.log(err)
-        }
-      )
-    }
+    this.handleGeolocation()
+    this.refreshOverpassLayer()
   }
 
   handleGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.setState({
-          position: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          },
-          mapKey: Math.random()
-        })
-      }, (err) => {
-        alert("Geolocation did not work: " + err)
-      }
-    )
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.setState({
+            position: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+            mapKey: Math.random()
+          })
+        }, (err) => {
+          console.log("Geolocation did not work: " + err)
+        }
+      )
+    } else {
+      console.log("Geolocation did not work.  Navigator.geolocation falsy")
+    }
   }
-
+/*
   getPosition = (e) => {
     const endpoint = `https://nominatim.openstreetmap.org/reverse?\
       format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}&zoom=18&addressdetails=1`
@@ -72,7 +62,7 @@ class App extends React.Component {
         console.log(err)
       })
   }
-
+*/
   refreshOverpassLayer = () => {
     console.log('in refreshOverpassLayer')
     this.setState({
@@ -82,14 +72,12 @@ class App extends React.Component {
 
   render () {
     return (
-        <Map 
+      <Map 
           style={{height: "100vh", width: "100vw"}}
           zoom={this.state.zoom}
-          center={this.state.position}
+          center={[this.state.position.lat, this.state.position.lng]}
           key={this.state.mapKey}
-          onClick={this.getPosition}
-          ref='map'
-        >
+      >
           <TileLayer
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             attribution='&copy; <a href="http://osm.org/<copyright">OpenStreetMap</a> contributors'
@@ -106,14 +94,14 @@ class App extends React.Component {
             </Button>
           </Control>*/}
           <OverpassLayer
-            key={this.state.overpassLayerKey}            
+            id={this.state.overpassLayerKey}            
           />
           {/*}
           <Marker
             position={this.state.position}
           />
           */}
-        </Map>
+      </Map>
     )
   }
 }
