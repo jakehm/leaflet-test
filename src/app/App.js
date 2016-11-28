@@ -1,10 +1,17 @@
 import React from 'react'
-import 'react-toolbox/lib/commons.scss'
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
-import Control from 'react-leaflet-control'
-import { Button, IconButton } from 'react-toolbox';
 import axios from 'axios'
-import OverpassLayer from './OverpassLayer'
+import polyline from 'polyline'
+
+// react-leaflet imports
+import { Map, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
+import Control from 'react-leaflet-control'
+//implementing AnimatedMarker plugin
+import AnimatedMarkerElement from './AnimatedMarkerElement.js' 
+
+// react-toolbox imports
+import { Button, IconButton } from 'react-toolbox';
+//I don't even know what this does
+import 'react-toolbox/lib/commons.scss'
 
 class App extends React.Component {
   state = {
@@ -14,13 +21,6 @@ class App extends React.Component {
       lng: -0.09,
     },
     mapKey: Math.random(),
-    overpassLayerKey: Math.random()
-  }
-
-  componentDidMount () {
-    //center map on user's current position
-    this.handleGeolocation()
-    this.refreshOverpassLayer()
   }
 
   handleGeolocation = () => {
@@ -42,65 +42,75 @@ class App extends React.Component {
       console.log("Geolocation did not work.  Navigator.geolocation falsy")
     }
   }
-/*
-  getPosition = (e) => {
-    const endpoint = `https://nominatim.openstreetmap.org/reverse?\
-      format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}&zoom=18&addressdetails=1`
+
+  handleMapClick = (e) => {
+    console.log(e)
+    const destination = {
+      lat: e.latlng.lat,
+      lng: e.latlng.lng
+    }
+
+    this.getRoute(this.state.position, destination)
+  }
+
+  getRoute = (position, destination) =>{
+    const endpoint = 'https://router.project-osrm.org/match/v1/driving/'
+      + position.lng + ',' + position.lat + ';'
+      + destination.lng + ',' + destination.lat
+  
     axios.get(endpoint)
-      .then((response) => {
-        const address = response.data.display_name.split(' ').join('+')        
-        const searchEndpoint = `https://nominatim.openstreetmap.org/search?q=${address}&format=json&polygon=1&addressdetails=1`
-        axios.get(searchEndpoint)
-          .then((response) => {
-            console.log('Nominatim search:\n'+response.data)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+      .then(response => {
+        const geometry = response.data.matchings[0].geometry
+        const coordinates = polyline.decode(geometry)
+        console.log(coordinates)
+        this.setState({
+          destination: destination,
+          route: {
+            'type': 'LineString',
+            'coordinates': coordinates
+          }
+        })
       })
-      .catch((err) => {
-        console.log(err)
-      })
+      .catch(error => {
+        console.log('endpoint= ' + endpoint)
+        console.log(error)
+      }) 
   }
-*/
-  refreshOverpassLayer = () => {
-    console.log('in refreshOverpassLayer')
-    this.setState({
-      overpassLayerKey: Math.random()
-    })
-  }
+
 
   render () {
     return (
       <Map 
-          style={{height: "100vh", width: "100vw"}}
-          zoom={this.state.zoom}
-          center={[this.state.position.lat, this.state.position.lng]}
-          key={this.state.mapKey}
-      >
-          <TileLayer
-            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            attribution='&copy; <a href="http://osm.org/<copyright">OpenStreetMap</a> contributors'
+        style={{height: "100vh", width: "100vw"}}
+        zoom={this.state.zoom}
+        center={this.state.position}
+        key={this.state.mapKey}
+        ref='map'
+        onClick={this.handleMapClick}
+        >
+        <TileLayer
+          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          attribution='&copy; <a href="http://osm.org/<copyright">OpenStreetMap</a> contributors'
+        />
+        <Control position="bottomright" >
+          <Button icon='my_location' floating  mini 
+            onClick={this.handleGeolocation}
           />
-          {/*<Control position="bottomright" >
-            <Button icon='my_location' floating  mini 
-              onClick={this.handleGeolocation}
-            />
-          </Control>
-          <Control position="topright" >
-            <Button 
-              onClick={this.refreshOverpassLayer}>
-              Refresh POIs
-            </Button>
-          </Control>*/}
-          <OverpassLayer
-            id={this.state.overpassLayerKey}            
-          />
-          {/*}
-          <Marker
-            position={this.state.position}
-          />
-          */}
+        </Control>
+        <Control position="topright" >
+          <Button>
+            Refresh POIs
+          </Button>
+        </Control>
+        <Marker
+          position={this.state.position}
+        />
+        {this.state.route &&
+          <Polyline positions={this.state.route.coordinates} />
+        }
+        {this.state.route &&
+          <AnimatedMarkerElement route={this.state.route} />
+        }
       </Map>
     )
   }

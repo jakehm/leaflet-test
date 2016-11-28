@@ -3,9 +3,15 @@ import L from 'leaflet'
 import LeafletOverpassLayer from 'leaflet-overpass-layer'
 
 export default class OverpassLayer extends LayerGroup {
+  constructor(props) {
+    super(props)
+    this.addLayer(props.map)
+  }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.id)
-    console.log('OverpassLayer receiving props')
+    this.addLayer(nextProps.map)
+  }
+
+  addLayer = (map) => {
     const query = '('
       + 'node["amenity"]({{bbox}});'
       + 'way["amenity"]({{bbox}});'
@@ -19,6 +25,6 @@ export default class OverpassLayer extends LayerGroup {
       'query': query,
       'endPoint': 'https://overpass-api.de/api/',
     })
-    nextProps.map.addLayer(opl)
+    map.addLayer(opl)
   }
 }
