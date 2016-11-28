@@ -44,16 +44,22 @@ class App extends React.Component {
   }
 
   handleMapClick = (e) => {
-    console.log(e)
     const destination = {
       lat: e.latlng.lat,
       lng: e.latlng.lng
     }
 
-    this.getRoute(this.state.position, destination)
+    let position
+    if (this.state.route) {
+      const animatedMarker = this.animatedMarkerElement.animatedMarker
+      position = animatedMarker.getLatLng()
+    } else {
+      position = this.state.position
+    }
+    this.getRoute(position, destination)
   }
 
-  getRoute = (position, destination) =>{
+  getRoute = (position, destination) => {
     const endpoint = 'https://router.project-osrm.org/match/v1/driving/'
       + position.lng + ',' + position.lat + ';'
       + destination.lng + ',' + destination.lat
@@ -76,7 +82,6 @@ class App extends React.Component {
         console.log(error)
       }) 
   }
-
 
   render () {
     return (
@@ -102,14 +107,19 @@ class App extends React.Component {
             Refresh POIs
           </Button>
         </Control>
-        <Marker
-          position={this.state.position}
-        />
+        {!this.state.route &&
+          <Marker
+           position={this.state.position}
+          />
+        }
         {this.state.route &&
           <Polyline positions={this.state.route.coordinates} />
         }
         {this.state.route &&
-          <AnimatedMarkerElement route={this.state.route} />
+            <AnimatedMarkerElement 
+              route={this.state.route} 
+              ref={marker => { this.animatedMarkerElement = marker }}
+            />
         }
       </Map>
     )
