@@ -6,7 +6,9 @@ import polyline from 'polyline'
 import { Map, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import Control from 'react-leaflet-control'
 //implementing AnimatedMarker plugin
-import AnimatedMarkerElement from './AnimatedMarkerElement.js' 
+import AnimatedMarkerElement from './AnimatedMarkerElement.js'
+//implementing mapzen's searchbox
+import SearchBox from './SearchBox.js'
 
 // react-toolbox imports
 import { Button, IconButton } from 'react-toolbox';
@@ -68,7 +70,6 @@ class App extends React.Component {
       .then(response => {
         const geometry = response.data.matchings[0].geometry
         const coordinates = polyline.decode(geometry)
-        console.log(coordinates)
         this.setState({
           destination: destination,
           route: {
@@ -97,6 +98,9 @@ class App extends React.Component {
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/<copyright">OpenStreetMap</a> contributors'
         />
+        <Control position="topleft">
+          <SearchBox />
+        </Control>
         <Control position="bottomright" >
           <Button icon='my_location' floating  mini 
             onClick={this.handleGeolocation}
