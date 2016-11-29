@@ -1,17 +1,16 @@
-import { MapComponent } from 'react-leaflet'
+import { MapControl } from 'react-leaflet'
 import L from 'leaflet'
-import Mapzen from 'mapzen.js'
-import React from 'react'
+import 'leaflet-geocoder-mapzen'
 
-export default class SearchBox extends React.Component {
+export default class SearchBox extends MapControl {
 
   componentWillMount () {
-    super.componentWillMount()
-    const geocoder = L.Mapzen.geocoder('mapzen-mNEwdS8')
-    geocoder.addTo(this.props.map)
-  }
-
-  render () {
-    return null
+    const options = {
+      focus: true,
+      position: 'topright',
+      attribution: null
+    }
+    const searchBox = L.control.geocoder('mapzen-mNEwdS8', options)
+    this.leafletElement = searchBox
   }
 }

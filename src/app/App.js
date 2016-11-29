@@ -12,8 +12,6 @@ import SearchBox from './SearchBox.js'
 
 // react-toolbox imports
 import { Button, IconButton } from 'react-toolbox';
-//I don't even know what this does
-import 'react-toolbox/lib/commons.scss'
 
 class App extends React.Component {
   state = {
@@ -91,25 +89,19 @@ class App extends React.Component {
         zoom={this.state.zoom}
         center={this.state.position}
         key={this.state.mapKey}
-        ref='map'
         onClick={this.handleMapClick}
+        ref='map'
         >
         <TileLayer
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/<copyright">OpenStreetMap</a> contributors'
         />
-        <Control position="topleft">
-          <SearchBox />
-        </Control>
+        <SearchBox 
+        />
         <Control position="bottomright" >
           <Button icon='my_location' floating  mini 
             onClick={this.handleGeolocation}
           />
-        </Control>
-        <Control position="topright" >
-          <Button>
-            Refresh POIs
-          </Button>
         </Control>
         {!this.state.route &&
           <Marker
