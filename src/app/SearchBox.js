@@ -1,6 +1,7 @@
 import { MapControl } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet-geocoder-mapzen'
+require('./styles/leaflet-geocoder-mapzen.css')
 
 export default class SearchBox extends MapControl {
 
