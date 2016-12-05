@@ -12,6 +12,9 @@ export default class SearchBox extends MapControl {
       attribution: null
     }
     const searchBox = L.control.geocoder('mapzen-mNEwdS8', options)
+    searchBox.on('select', e => {
+      this.props.onSelect(e);
+    })
     this.leafletElement = searchBox
   }
 }

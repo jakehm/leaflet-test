@@ -10,9 +10,6 @@ import AnimatedMarkerElement from './AnimatedMarkerElement.js'
 //implementing mapzen's searchbox
 import SearchBox from './SearchBox.js'
 
-// react-toolbox imports
-import { Button, IconButton } from 'react-toolbox';
-
 class App extends React.Component {
   state = {
     zoom: 16,
@@ -43,11 +40,8 @@ class App extends React.Component {
     }
   }
 
-  handleMapClick = (e) => {
-    const destination = {
-      lat: e.latlng.lat,
-      lng: e.latlng.lng
-    }
+  handleNavigate = (e) => {
+    const destination = e.latlng
 
     let position
     if (this.state.route) {
@@ -82,6 +76,10 @@ class App extends React.Component {
       }) 
   }
 
+  handleSearchSelect = e => {
+    console.log(e)
+  }
+
   render () {
     return (
       <Map 
@@ -89,19 +87,22 @@ class App extends React.Component {
         zoom={this.state.zoom}
         center={this.state.position}
         key={this.state.mapKey}
-        onClick={this.handleMapClick}
+        onClick={this.handleNavigate}
         ref='map'
         >
         <TileLayer
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="http://osm.org/<copyright">OpenStreetMap</a> contributors'
         />
-        <SearchBox 
+        <SearchBox
+          onSelect={this.handleNavigate}
         />
         <Control position="bottomright" >
-          <Button icon='my_location' floating  mini 
+          <button
             onClick={this.handleGeolocation}
-          />
+            >
+            geolocate
+          </button>
         </Control>
         {!this.state.route &&
           <Marker

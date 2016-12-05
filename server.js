@@ -5,7 +5,6 @@ const internalIp = require('internal-ip');
 const express = require('express');
 const webpack = require('webpack');
 const path = require('path');
-
 const app = express();
 const compiler = webpack(config);
 
