@@ -6,11 +6,11 @@ import polyline from 'polyline'
 import { Map, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import Control from 'react-leaflet-control'
 //implementing AnimatedMarker plugin
-import AnimatedMarkerElement from './AnimatedMarkerElement.js'
+import AnimatedMarkerElement from './components/AnimatedMarkerElement.js'
 //implementing mapzen's searchbox
-import SearchBox from './SearchBox.js'
+import SearchBox from './components/SearchBox.js'
 
-class App extends React.Component {
+class Home extends React.Component {
   state = {
     zoom: 16,
     position: {
