@@ -7,8 +7,9 @@ export default class AuthService {
     this.lock = new Auth0Lock(clientId, domain, {
       auth: {
         redirectUrl: 'http://localhost:8080/login',
-        responseType: 'token'
-      }
+        responseType: 'token',
+      },
+      usernameStyle: 'username',
     })
     // Add callback for lock `authenticated` event
     this.lock.on('authenticated', this._doAuthentication.bind(this))
