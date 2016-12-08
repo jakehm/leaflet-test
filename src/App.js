@@ -43,9 +43,7 @@ export default class App extends React.Component {
           console.log("Geolocation did not work: " + err)
         }
       )
-    } else {
-      console.log("Geolocation did not work.  Navigator.geolocation falsy")
-    }
+    }  
   }
 
   handleNavigate = (e) => {
