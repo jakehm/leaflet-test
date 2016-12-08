@@ -9,8 +9,9 @@ import Control from 'react-leaflet-control'
 import AnimatedMarkerElement from './components/AnimatedMarkerElement.js'
 //implementing mapzen's searchbox
 import SearchBox from './components/SearchBox.js'
+import Login from './components/Login.js'
 
-class Home extends React.Component {
+export default class App extends React.Component {
   state = {
     zoom: 16,
     position: {
@@ -18,6 +19,13 @@ class Home extends React.Component {
       lng: -0.09,
     },
     mapKey: Math.random(),
+    isLoggedIn: false,
+  }
+
+  handleLogin = () => {
+    this.setState({
+      isLoggedIn: true
+    })
   }
 
   handleGeolocation = () => {
@@ -81,8 +89,16 @@ class Home extends React.Component {
   }
 
   render () {
-    return (
-      <Map 
+    let contents = null;
+    if (!this.state.isLoggedIn) {
+      contents = (
+        <Login 
+          onLogin={this.handleLogin}
+        />
+      )
+    } else { 
+      contents = (
+        <Map 
         style={{height: "100vh", width: "100vw"}}
         zoom={this.state.zoom}
         center={this.state.position}
@@ -118,9 +134,9 @@ class Home extends React.Component {
               ref={marker => { this.animatedMarkerElement = marker }}
             />
         }
-      </Map>
-    )
+        </Map>
+      )
+    }
+    return (<div>{contents}</div>)
   }
 }
-
-export default Home;
