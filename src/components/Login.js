@@ -7,17 +7,21 @@ export default class Login extends React.Component {
 		isLogin: true,
 	}
 
-	handleLogin = () => {
+	goToLogin = () => {
 		this.setState({
 			isLogin: true
 		})
 	}
 
-	handleSignup = () => {
+	goToSignup = () => {
 		this.setState({
 			isLogin: false
 		})
 	}
+
+  handleSubmit = () => {
+    
+  }
 
 	render () {
 		return (
@@ -25,13 +29,13 @@ export default class Login extends React.Component {
 				<ButtonToolbar>
 					<Button bsSize="large"
 						active={this.state.isLogin}
-						onClick={this.handleLogin}
+						onClick={this.goToLogin}
 					>
 						Login
 					</Button>
 					<Button bsSize="large" 
 						active={!this.state.isLogin}
-						onClick={this.handleSignup}
+						onClick={this.goToSignup}
 					>
 						Signup
 					</Button>          
@@ -75,7 +79,9 @@ export default class Login extends React.Component {
 						}
 						<FormGroup>
 							<Col smOffset={2} sm={10}>
-								<Button type="submit">
+								<Button type="submit"
+                  onClick={this.handleSubmit}
+                  >
 									{ this.state.isLogin ? 'Login' : 'Sign up' }
 								</Button>
 							</Col>
